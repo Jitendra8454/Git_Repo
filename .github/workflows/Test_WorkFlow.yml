@@ -1,0 +1,18 @@
+name: My First Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-runner:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Print Hello
+        run: echo "Hello GitHub Actions"
+
+      - name: Show Files
+        run: dir

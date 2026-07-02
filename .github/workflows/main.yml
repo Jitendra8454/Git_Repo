@@ -11,30 +11,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Print Hello
-        run: echo "Hello, world!"
+      - name: Show files
+        run: dir
 
-      # ✅ PROPER AZURE LOGIN
       - name: Azure Login
-        uses: hyperskill/azure-login@v3.0.0
+        uses: azure/login@v2
         with:
-          client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-          subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
 
       - name: Verify Azure Login
         run: az account show
 
-      # ✅ TERRAFORM SETUP
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
       - name: Terraform Init
         run: terraform init
+        working-directory: .
 
       - name: Terraform Plan
         run: terraform plan
+        working-directory: .
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
+        working-directory: .

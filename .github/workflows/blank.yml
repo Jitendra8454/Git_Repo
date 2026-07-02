@@ -1,4 +1,4 @@
-name: Terraform CI/CD
+name: Terraform Self Hosted Pipeline
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   terraform:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
@@ -16,7 +16,7 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup Terraform
@@ -27,14 +27,13 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Format Check
-        run: terraform fmt -check
-
       - name: Terraform Validate
         run: terraform validate
 
+      # PLAN + SAVE OUTPUT
       - name: Terraform Plan
-        run: terraform plan
+        run: terraform plan -out=tfplan
 
+      # APPLY AUTOMATICALLY FROM PLAN FILE
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve tfplan

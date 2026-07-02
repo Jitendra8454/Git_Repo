@@ -8,42 +8,25 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      # 1. Checkout repo from GitHub
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Show files (DEBUG step - important)
-      - name: Show repository files
-        run: dir
-
-      # 3. Setup Terraform
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      # 4. Azure Login (IMPORTANT FIXED)
       - name: Azure Login
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # 5. Verify Azure login
       - name: Verify Azure Login
         run: az account show
 
-      # 6. Terraform Init (root folder)
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
       - name: Terraform Init
         run: terraform init
-        working-directory: .
 
-      # 7. Terraform Plan
       - name: Terraform Plan
         run: terraform plan
-        working-directory: .
 
-      # 8. Terraform Apply
       - name: Terraform Apply
         run: terraform apply -auto-approve
-        working-directory: .

@@ -1,23 +1,42 @@
-name: Azure Deploy Self Hosted
+name: Dummy Workflow
+
 
 on:
   workflow_dispatch:
 
+
 jobs:
-  deploy:
+  build:
     runs-on: self-hosted
 
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Azure Login
-        uses: hyperskill/azure-login@v3.0.0
-        with:
-          client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-          subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          tenant_id: ${{ secrets.AZURE_TENANT_ID }}
 
-      - name: Verify login
-        run: az account show
+      - name: Run a one-line script
+        run: echo "Hello, world!"
+
+
+      - name: azure login
+        run: az login --
+        # Azure client id
+            client_id: cc6f0237-c5f2-4f47-8cf3-750d6ce1ae22
+            # Azure client secret
+            client_secret: Dx-8Q~P~rytoif1RLDPYAC-tHwBUPIqTaxPmZc5S
+            # Azure subscription id
+            subscription_id: e057a30d-a63f-4040-9669-eeb1ecc6797a
+            # Azure tenant id
+            tenant_id: 4fa489ec-d371-45ee-a25e-a12d51cac67c
+
+
+      - name: init
+        run: terraform init
+
+
+      - name: plan
+        run: terraform plan
+
+
+      - name: apply
+        run: terraform apply -auto-approve

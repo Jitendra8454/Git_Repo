@@ -1,20 +1,25 @@
-name: Azure Self Hosted Login
+name: Deploy to Staging
+
 
 on:
   workflow_dispatch:
 
+
 jobs:
-  test:
-    runs-on: self-hosted
+  my_job:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+
 
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-
-      - name: Azure Login
-        uses: azure/login@v2
+      - name: Login to Azure
+        uses: hyperskill/azure-login@v3.0.0
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Verify Login
-        run: az account show
+            # Azure client id
+            client_id: cc6f0237-c5f2-4f47-8cf3-750d6ce1ae22
+            # Azure client secret
+            client_secret: Dx-8Q~P~rytoif1RLDPYAC-tHwBUPIqTaxPmZc5S
+            # Azure subscription id
+            subscription_id: e057a30d-a63f-4040-9669-eeb1ecc6797a
+            # Azure tenant id
+            tenant_id: 4fa489ec-d371-45ee-a25e-a12d51cac67c

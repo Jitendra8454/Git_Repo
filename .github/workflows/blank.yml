@@ -1,4 +1,4 @@
-name: Terraform Self Hosted Pipeline
+name: Terraform Self Hosted Azure Pipeline
 
 on:
   push:
@@ -9,6 +9,9 @@ jobs:
   terraform:
     runs-on: self-hosted
 
+    # ⚠️ If you used ENVIRONMENT secrets, uncomment below and set name
+    # environment: production
+
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
@@ -16,8 +19,13 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Debug Secrets (REMOVE AFTER FIX)
+        run: |
+          echo "Client ID length = ${#ARM_CLIENT_ID}"
+          echo "Tenant ID length = ${#ARM_TENANT_ID}"
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -30,10 +38,8 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      # PLAN + SAVE OUTPUT
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
-      # APPLY AUTOMATICALLY FROM PLAN FILE
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan

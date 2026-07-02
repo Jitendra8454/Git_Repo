@@ -1,43 +1,40 @@
-name: Dummy Workflow
-
+name: Terraform Deploy
 
 on:
   workflow_dispatch:
-
 
 jobs:
   build:
     runs-on: self-hosted
 
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-
-      - name: Run a one-line script
+      - name: Print Hello
         run: echo "Hello, world!"
 
+      # ✅ PROPER AZURE LOGIN
+      - name: Azure Login
+        uses: hyperskill/azure-login@v3.0.0
+        with:
+          client_id: ${{ secrets.AZURE_CLIENT_ID }}
+          client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          tenant_id: ${{ secrets.AZURE_TENANT_ID }}
 
-      - name: azure login
-        run: az login --
-        # Azure client id
-            client_id: cc6f0237-c5f2-4f47-8cf3-750d6ce1ae22
-            # Azure client secret
-            client_secret: Dx-8Q~P~rytoif1RLDPYAC-tHwBUPIqTaxPmZc5S
-            # Azure subscription id
-            subscription_id: e057a30d-a63f-4040-9669-eeb1ecc6797a
-            # Azure tenant id
-            tenant_id: 4fa489ec-d371-45ee-a25e-a12d51cac67c
+      - name: Verify Azure Login
+        run: az account show
 
+      # ✅ TERRAFORM SETUP
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
-      - name: init
+      - name: Terraform Init
         run: terraform init
 
-
-      - name: plan
+      - name: Terraform Plan
         run: terraform plan
 
-
-      - name: apply
+      - name: Terraform Apply
         run: terraform apply -auto-approve
-
